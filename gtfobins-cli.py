@@ -8,6 +8,7 @@ import urllib.request
 
 
 BOLD_CYAN = '\x1b[1;36m'
+BOLD_RED = '\x1b[1;31m'
 BOLD_UNDERLINE_RED = '\x1b[1;4;31m'
 BOLD_YELLOW = '\x1b[1;33m'
 NEGATIVE_GREEN = '\x1b[1;7;32m'
@@ -59,9 +60,10 @@ def get_url(url: str) -> str:
 
 def parse_text(res: str) -> str:
     res = re.sub(r'<a.+?>', BOLD_YELLOW, res)
+    res = re.sub(r'<em>', BOLD_RED, res)
     res = re.sub(r'<code.+?>', BOLD_CYAN, res)
 
-    return re.sub(r'</a>|</code>', RESET, res).strip()
+    return re.sub(r'</a>|</em>|</code>', RESET, res).strip()
 
 
 def parse_lists(res: str) -> str:
