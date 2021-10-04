@@ -17,9 +17,9 @@ RESET = '\x1b[0m'
 
 def gtfobins(cmd: str):
     url = f'https://gtfobins.github.io/gtfobins/{cmd}/'
-    print(f'\n{NEGATIVE_GREEN}{cmd}{RESET} ==> {BOLD_YELLOW}{url}{RESET}\n')
-
     res = get_url(url)
+
+    print(f'\n{NEGATIVE_GREEN}{cmd}{RESET} ==> {BOLD_YELLOW}{url}{RESET}\n')
 
     blocks = list(map(lambda x: f'<h2{x}', res.split('<h2')[1:]))
     results = []
@@ -53,7 +53,7 @@ def get_url(url: str) -> str:
     try:
         return html.unescape(urllib.request.urlopen(url).read().decode())
     except:
-        print(f'\n{BOLD_UNDERLINE_RED}Could not load page.{RESET}')
+        print(f'\n{BOLD_UNDERLINE_RED}Could not load page{RESET}')
         print(f'\nSearch on: {BOLD_YELLOW}https://gtfobins.github.io/{RESET}')
         sys.exit(1)
 
