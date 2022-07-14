@@ -6,6 +6,8 @@ import sys
 import urllib.parse
 import urllib.request
 
+from typing import List
+
 
 BOLD_CYAN = '\x1b[1;36m'
 BOLD_RED = '\x1b[1;31m'
@@ -14,8 +16,26 @@ BOLD_YELLOW = '\x1b[1;33m'
 NEGATIVE_GREEN = '\x1b[1;7;32m'
 RESET = '\x1b[0m'
 
+OPTIONS = [
+    'shell',
+    'command',
+    'reverse-shell',
+    'non-interactive-reverse-shell',
+    'bind-shell',
+    'non-interactive-bind-shell',
+    'file-upload',
+    'file-download',
+    'file-write',
+    'file-read',
+    'library-load',
+    'suid',
+    'sudo',
+    'capabilities',
+    'limited-suid'
+]
 
-def gtfobins(cmd: str):
+
+def gtfobins(cmd: str, options: List[str]):
     url = f'https://gtfobins.github.io/gtfobins/{cmd}/'
     res = get_url(url)
 
@@ -25,20 +45,27 @@ def gtfobins(cmd: str):
     results = []
 
     for res in blocks:
-        method = re.findall(r'\s*?<h2.*?>(.*?)</h2>', res, re.MULTILINE)[0]
+        method, title = re.findall(
+            r'\s*?<h2 id="(.*?)".*?>(.*?)</h2>', res, re.MULTILINE)[0]
         descriptions = re.findall(
             r'\s*?</h2>\n<p>([\s\S]*?)</p>', res, re.MULTILINE)
         lists = re.findall(r'\s*?<ul.*?>([\s\S]*?)</ul>', res, re.MULTILINE)
 
-        results += [f'\n{BOLD_UNDERLINE_RED}{method}{RESET}']
-        results += map(parse_text, descriptions)
-        results += map(parse_lists, lists)
+        if options and method in options:
+            results += [f'\n{BOLD_UNDERLINE_RED}{title}{RESET}']
+            results += map(parse_text, descriptions)
+            results += map(parse_lists, lists)
 
-    print('\n\n'.join(results))
+    if results:
+        print('\n\n'.join(results))
+    else:
+        print(f'\n{BOLD_UNDERLINE_RED}Could not load method for `{cmd}`{RESET}')
 
 
 def print_help():
-    print(f'\n{BOLD_UNDERLINE_RED}Usage: gtfobins-cli <command>{RESET}')
+    options = '\n         --'.join(OPTIONS)
+    print(f'\n{BOLD_UNDERLINE_RED}Usage: gtfobins-cli [options] <command>')
+    print(f'\n{RESET}Options: {BOLD_RED}--{options}{RESET}')
 
     res = get_url('https://gtfobins.github.io/')
 
@@ -85,7 +112,8 @@ def main():
         print_help()
         sys.exit(1)
 
-    gtfobins(sys.argv[1])
+    options = list(map(lambda s: s.lstrip('--'), sys.argv[1:-1]))
+    gtfobins(sys.argv[-1], options)
 
 
 if __name__ == '__main__':
