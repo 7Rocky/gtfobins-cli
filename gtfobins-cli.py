@@ -51,7 +51,7 @@ def gtfobins(cmd: str, options: List[str]):
             r'\s*?</h2>\n<p>([\s\S]*?)</p>', res, re.MULTILINE)
         lists = re.findall(r'\s*?<ul.*?>([\s\S]*?)</ul>', res, re.MULTILINE)
 
-        if options and method in options:
+        if method in options or not options:
             results += [f'\n{BOLD_UNDERLINE_RED}{title}{RESET}']
             results += map(parse_text, descriptions)
             results += map(parse_lists, lists)
