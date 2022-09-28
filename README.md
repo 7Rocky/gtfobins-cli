@@ -110,6 +110,7 @@ If the binary is allowed to run as superuser by sudo, it does not drop the eleva
 TF=$(mktemp -u)
 sudo zip $TF /etc/hosts -T -TT 'sh #'
 sudo rm $TF
+```
 
 ## Using `gtfobins-cli` with Docker
 
